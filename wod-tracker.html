@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css" integrity="sha384-DhY6onE6f3zzKbjUPRc2hOzGAdEf4/Dz+WJwBvEYL/lkkIsI3ihufq9hk9K4lVoK" crossorigin="anonymous">
+
+  <title>Wod Tracker</title>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center">WOD tracker</h1>
+    <div class="card px-3 py-3 my-3 bg-light">
+      <h2>Add new WOD</h2>
+      <div class="mb-3">
+        <label for="nameform" class="form-label">WOD name</label>
+        <input type="text" class="form-control" id="nameform">
+      </div>
+      <div class="mb-3">
+        <label for="difficultyform" class="form-label">WOD Difficulty</label>
+        <input type="text" class="form-control" id="difficultyform">
+      </div>
+      <div class="mb-3">
+        <label for="assigneeform" class="form-label">WOD Assignee</label>
+        <input type="text" class="form-control" id="assigneeform">
+      </div>
+      <button class="btn btn-primary" onClick="addItemPressed()">Add new Item</button>
+    </div>
+    <div class="card px-3 py-3 my-3 bg-light">
+      <h2 >List of WODs</h2>
+      <table class="table table-bordered table-striped table-hover">
+        <thead>
+          <tr>
+            <th>WOD name</th>
+            <th>WOD Difficulty</th>
+            <th>WOD Assignee</th>
+          </tr>
+        </thead>
+        <tbody id="wodtbody">
+
+        </tbody>
+      </table>
+    </div> 
+    <div class="card px-3 py-3 my-3" hidden id="wodCard">
+      <h2>WOD Detail</h2>
+      <p id="wodName">Mock name</p>
+      <p id="wodDifficulty">Mock Difficulty</p>
+      <p id="wodAsssignee">Mock assignee</p>
+      <p id="wodStatus">Done</p>
+      <div class="row">
+        <div class="col-6"> 
+          <button class="btn btn-danger btn-block" onclick="deletePressed()">Delete</button>
+        </div>
+        <div class="col-6"> 
+          <button class="btn btn-info btn-block text-light" onclick="markAsDonePressed()">Mark as done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Optional JavaScript; choose one of the two! -->
+
+  <!-- Option 1: Bootstrap Bundle with Popper.js -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/js/bootstrap.bundle.min.js" integrity="sha384-BOsAfwzjNJHrJ8cZidOg56tcQWfp6y72vEJ8xQ9w6Quywb24iOsW913URv1IS4GD" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+      var wods = []
+      var selectedWod
+
+      function addItemPressed(){
+        var name = document.getElementById("nameform").value;
+        var difficulty = document.getElementById("difficultyform").value;
+        var assignee = document.getElementById("assigneeform").value;
+
+        var newWod = {
+          name:name,
+          difficulty:difficulty,
+          assignee:assignee,
+          completed:false
+        }
+
+        wods.push(newWod)
+
+        var newTd1 = document.createElement("td")
+        var newTd2 = document.createElement("td")
+        var newTd3 = document.createElement("td")
+
+        newTd1.innerHTML = name;
+        newTd2.innerHTML = difficulty;
+        newTd3.innerHTML = assignee
+
+        var newTr = document.createElement("tr");
+        newTr.wod = newWod 
+        newTr.addEventListener('click', function(evt){
+          selectedWod = evt.target.wod;
+          document.getElementById("wodCard").hidden = false
+          document.getElementById("wodName").innerHTML = newWod.name;
+          document.getElementById("wodDifficulty").innerHTML = newWod.difficulty;
+          document.getElementById("wodAsssignee").innerHTML = newWod.assignee
+          document.getElementById("wodStatus").innerHTML = newWod.completed
+          
+        })
+
+        var wodtbody = document.getElementById("wodtbody")
+        newTr.appendChild(newTd1)
+        newTr.appendChild(newTd2)
+        newTr.appendChild(newTd3)
+        wodtbody.appendChild(newTr)
+
+      }
+
+      function deletePressed(){
+        for (var i = 0; i < wods.length; i++){
+          if (wods[i].name == selectedWod.name){
+            wods.splice(i,1)
+            break;
+          }
+        }
+        console.log(wods)
+        // Table is not refreshed!!
+        refreshTable()
+      }
+      function refreshTable(){
+        document.getElementById("wodtbody").innerHTML="";
+        for (var i = 0; i < wods.length; i++){
+          var newTr = document.createElement("tr")
+          var newTd1 = document.createElement("td");
+          var newTd2 = document.createElement("td") 
+          var newTd3 = document.createElement("td")
+
+          newTd1.innerHTML = wods[i].name
+          newTd2.innerHTML = wods[i].difficulty
+          newTd3.innerHTML = wods[i].assignee
+         newTr.wod = wods[i] 
+        newTr.addEventListener('click', function(evt){
+          // Getting the selected wod
+          selectedWod = evt.currentTarget.wod;
+
+          document.getElementById("wodCard").hidden = false
+          document.getElementById("wodName").innerHTML = selectedWod.name;
+          document.getElementById("wodDifficulty").innerHTML = selectedWod.difficulty;
+          document.getElementById("wodAsssignee").innerHTML = selectedWod.assignee
+          document.getElementById("wodStatus").innerHTML = selectedWod.completed
+          
+        })
+          newTr.appendChild(newTd1)
+          newTr.appendChild(newTd2)
+          newTr.appendChild(newTd3)
+          document.getElementById("wodtbody").appendChild(newTr)
+        }
+      }
+      function markAsDonePressed(){
+        for (var i = 0; i< wods.length; i++) {
+
+          if (wods[i].name ===  document.getElementById("wodName").innerHTML){
+            wods[i].completed = true;
+            //selectedWod.completed == true
+            document.getElementById("wodStatus").innerHTML = true
+          }
+        }
+        console.log(wods)
+
+      }
+    </script>
+</body>
+</html>
