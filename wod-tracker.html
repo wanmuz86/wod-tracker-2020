@@ -112,9 +112,9 @@
 
       }
 
-      function deletePressed(){
+      function deletePressed(selectedWod){
         for (var i = 0; i < wods.length; i++){
-          if (wods[i].name == selectedWod.name){
+          if (wods[i].name == document.getElementById("wodName").innerHTML){
             wods.splice(i,1)
             break;
           }
@@ -137,7 +137,9 @@
          newTr.wod = wods[i] 
         newTr.addEventListener('click', function(evt){
           // Getting the selected wod
+
           selectedWod = evt.currentTarget.wod;
+          console.log(selectedWod)
 
           document.getElementById("wodCard").hidden = false
           document.getElementById("wodName").innerHTML = selectedWod.name;
@@ -155,7 +157,7 @@
       function markAsDonePressed(){
         for (var i = 0; i< wods.length; i++) {
 
-          if (wods[i].name ===  document.getElementById("wodName").innerHTML){
+          if (wods[i].name ==  document.getElementById("wodName").innerHTML){
             wods[i].completed = true;
             //selectedWod.completed == true
             document.getElementById("wodStatus").innerHTML = true
